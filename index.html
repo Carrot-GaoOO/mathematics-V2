@@ -1,0 +1,1690 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小小数学侦探</title>
+  <style>
+    :root {
+      --paper: #fff8e7;
+      --paper-strong: #f8e8c3;
+      --ink: #18324a;
+      --muted: #617285;
+      --line: #d8c49c;
+      --mint: #4f9b86;
+      --mint-soft: #dcefe8;
+      --coral: #e66c55;
+      --coral-soft: #ffe1d8;
+      --gold: #d99c2b;
+      --gold-soft: #ffe8af;
+      --blue: #2d72a4;
+      --blue-soft: #dcebf6;
+      --shadow: 0 18px 45px rgba(58, 39, 12, .14);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 231, .94), rgba(248, 232, 195, .84)),
+        repeating-linear-gradient(0deg, rgba(24, 50, 74, .04) 0 1px, transparent 1px 26px);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 300px;
+      display: grid;
+      align-items: center;
+      padding: 34px clamp(18px, 5vw, 68px);
+      background:
+        linear-gradient(90deg, rgba(255, 248, 231, .96) 0%, rgba(255, 248, 231, .9) 34%, rgba(255, 248, 231, .25) 66%),
+        radial-gradient(circle at 82% 42%, rgba(79, 155, 134, .24), transparent 30%),
+        radial-gradient(circle at 74% 78%, rgba(230, 108, 85, .18), transparent 28%),
+        linear-gradient(135deg, #fff8e7 0%, #dcebf6 100%);
+      border-bottom: 1px solid rgba(216, 196, 156, .85);
+    }
+
+    .hero::after {
+      content: "🐰  🐤  18 + 6";
+      position: absolute;
+      right: clamp(18px, 8vw, 118px);
+      bottom: 22px;
+      width: min(38vw, 360px);
+      aspect-ratio: 1.35;
+      display: grid;
+      place-items: center;
+      color: #27445f;
+      background: rgba(255, 252, 241, .78);
+      border: 1px solid rgba(216, 196, 156, .82);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 42px rgba(58, 39, 12, .13);
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900;
+      pointer-events: none;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      color: #6c4617;
+      background: rgba(255, 232, 175, .9);
+      border: 1px solid rgba(217, 156, 43, .45);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 560px;
+      color: #39526a;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .shell {
+      width: min(1240px, calc(100% - 32px));
+      margin: -30px auto 44px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      background: rgba(255, 252, 241, .96);
+      border: 1px solid rgba(216, 196, 156, .9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .control-label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .segmented {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f2e4c5;
+      border: 1px solid rgba(184, 145, 69, .28);
+      border-radius: var(--radius);
+    }
+
+    .segmented button {
+      min-width: 78px;
+      padding: 9px 11px;
+      color: #744b15;
+      background: transparent;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .segmented button.is-active {
+      color: white;
+      background: var(--ink);
+    }
+
+    .primary,
+    .secondary,
+    .ghost {
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .primary {
+      color: white;
+      background: var(--coral);
+      box-shadow: 0 9px 18px rgba(230, 108, 85, .24);
+    }
+
+    .secondary {
+      color: white;
+      background: var(--mint);
+      box-shadow: 0 9px 18px rgba(79, 155, 134, .18);
+    }
+
+    .ghost {
+      color: var(--ink);
+      background: #efe0c0;
+      border: 1px solid rgba(118, 81, 27, .18);
+    }
+
+    .primary:hover,
+    .secondary:hover,
+    .ghost:hover {
+      transform: translateY(-1px);
+    }
+
+    .progress {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .case-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .case-card,
+    .mistake-panel {
+      background: rgba(255, 252, 241, .96);
+      border: 1px solid rgba(216, 196, 156, .9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .case-card {
+      overflow: hidden;
+    }
+
+    .case-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid rgba(216, 196, 156, .78);
+      background:
+        linear-gradient(90deg, rgba(220, 239, 232, .84), rgba(255, 248, 231, .2));
+    }
+
+    .case-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .case-index {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--ink);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .case-title h2 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 5px 9px;
+      color: #7b4d0c;
+      background: var(--gold-soft);
+      border: 1px solid rgba(217, 156, 43, .34);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .highlight-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      user-select: none;
+    }
+
+    .highlight-switch input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--coral);
+    }
+
+    .case-storyboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 18px;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .story-copy {
+      min-width: 0;
+    }
+
+    .story {
+      padding: 0;
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    .story mark {
+      padding: 2px 5px;
+      color: #442603;
+      background: linear-gradient(180deg, transparent 24%, rgba(255, 202, 72, .72) 24% 84%, transparent 84%);
+      border-radius: 5px;
+    }
+
+    .story .mark-standard {
+      background: linear-gradient(180deg, transparent 20%, rgba(255, 202, 72, .82) 20% 86%, transparent 86%);
+    }
+
+    .story .mark-relation {
+      color: #6d2d17;
+      background: linear-gradient(180deg, transparent 20%, rgba(230, 108, 85, .42) 20% 88%, transparent 88%);
+      outline: 2px solid rgba(230, 108, 85, .24);
+    }
+
+    .questions {
+      display: grid;
+      gap: 8px;
+      padding: 12px 0 0;
+      color: #27445f;
+      font-weight: 800;
+    }
+
+    .scene-card {
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+      align-self: stretch;
+      display: grid;
+      grid-template-rows: minmax(140px, 1fr) auto;
+      min-height: 180px;
+      background:
+        linear-gradient(180deg, rgba(255, 250, 240, .94), rgba(255, 232, 175, .42));
+      border: 1px solid rgba(216, 196, 156, .86);
+      border-radius: var(--radius);
+    }
+
+    .scene-visual {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      min-height: 158px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 16% 20%, rgba(255, 255, 255, .7), transparent 22%),
+        radial-gradient(circle at 86% 74%, rgba(255, 255, 255, .55), transparent 24%),
+        linear-gradient(135deg, var(--scene-a, #dcefe8), var(--scene-b, #ffe8af));
+    }
+
+    .scene-visual::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 2px dashed rgba(24, 50, 74, .12);
+      border-radius: 999px;
+    }
+
+    .scene-main {
+      position: relative;
+      z-index: 2;
+      font-size: 64px;
+      line-height: 1;
+      filter: drop-shadow(0 10px 12px rgba(58, 39, 12, .16));
+    }
+
+    .scene-prop {
+      position: absolute;
+      z-index: 1;
+      font-size: 28px;
+      line-height: 1;
+      opacity: .96;
+    }
+
+    .scene-prop:nth-child(1) {
+      left: 15%;
+      top: 20%;
+    }
+
+    .scene-prop:nth-child(2) {
+      right: 13%;
+      top: 18%;
+    }
+
+    .scene-prop:nth-child(3) {
+      left: 18%;
+      bottom: 18%;
+    }
+
+    .scene-prop:nth-child(4) {
+      right: 16%;
+      bottom: 17%;
+    }
+
+    .scene-card figcaption {
+      padding: 9px 10px;
+      color: #5b431e;
+      background: rgba(255, 232, 175, .68);
+      border-top: 1px solid rgba(216, 196, 156, .64);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .solve {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      background: rgba(246, 238, 216, .55);
+      border-top: 1px dashed rgba(146, 106, 40, .35);
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 11px;
+      align-items: start;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(216, 196, 156, .64);
+    }
+
+    .step:last-child {
+      border-bottom: 0;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--blue);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .step h3 {
+      margin: 2px 0 8px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .clues {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .clue-chip {
+      min-height: 38px;
+      padding: 8px 10px;
+      color: #2c4964;
+      background: #fffaf0;
+      border: 1px solid rgba(45, 114, 164, .24);
+      border-radius: var(--radius);
+      font-weight: 800;
+    }
+
+    .clue-chip.is-picked {
+      color: white;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .clue-chip[data-clue-id="relation"].is-picked {
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .result-hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .line-model {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid rgba(216, 196, 156, .78);
+      border-radius: var(--radius);
+    }
+
+    .model-row {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .model-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .model-bar {
+      min-height: 42px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 2px solid rgba(24, 50, 74, .16);
+      border-radius: var(--radius);
+      background: #fffdf8;
+    }
+
+    .model-bar span {
+      min-width: 0;
+      font-weight: 800;
+      text-align: center;
+      white-space: normal;
+    }
+
+    .draw-area {
+      display: grid;
+      gap: 8px;
+    }
+
+    .draw-track {
+      position: relative;
+      height: 52px;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .line-fill,
+    .line-gap {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 0 10px;
+      overflow: hidden;
+      transition: width .16s ease;
+    }
+
+    .standard-fill {
+      width: var(--standard-pct, 5%);
+      color: #5a3c0e;
+      background: var(--gold-soft);
+    }
+
+    .compare-fill {
+      width: var(--compare-base-pct, 5%);
+      color: #173c5b;
+      background: var(--blue-soft);
+    }
+
+    .line-gap {
+      width: var(--diff-pct, 0%);
+      min-width: 0;
+      color: #74331d;
+      background: repeating-linear-gradient(135deg, rgba(255, 225, 216, .94) 0 8px, rgba(255, 241, 236, .94) 8px 16px);
+      border-left: 2px dashed rgba(230, 108, 85, .55);
+    }
+
+    .line-model.more .compare-fill {
+      width: var(--compare-base-pct, 5%);
+    }
+
+    .line-model.more .line-gap {
+      width: var(--diff-pct, 0%);
+    }
+
+    .line-range {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: grab;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+    }
+
+    .compare-range {
+      accent-color: var(--mint);
+    }
+
+    .line-range:active {
+      cursor: grabbing;
+    }
+
+    .line-range::-webkit-slider-runnable-track {
+      height: 52px;
+      background: transparent;
+    }
+
+    .line-range::-webkit-slider-thumb {
+      appearance: none;
+      width: 24px;
+      height: 58px;
+      margin-top: -3px;
+      background: var(--ink);
+      border: 3px solid #fffaf0;
+      border-radius: 7px;
+      box-shadow: 0 8px 16px rgba(24, 50, 74, .22);
+    }
+
+    .line-range::-moz-range-track {
+      height: 52px;
+      background: transparent;
+      border: 0;
+    }
+
+    .line-range::-moz-range-thumb {
+      width: 24px;
+      height: 52px;
+      background: var(--ink);
+      border: 3px solid #fffaf0;
+      border-radius: 7px;
+      box-shadow: 0 8px 16px rgba(24, 50, 74, .22);
+    }
+
+    .slider-readout {
+      min-height: 27px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.45;
+      visibility: visible;
+      opacity: 1;
+      transition: color .16s ease, transform .16s ease;
+    }
+
+    .slider-readout.is-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .standard-readout {
+      color: #6f470e;
+    }
+
+    .compare-readout {
+      color: #173c5b;
+    }
+
+    .slider-readout.is-correct {
+      color: var(--coral);
+      transform: translateY(-1px);
+    }
+
+    .line-range:focus-visible {
+      outline: 3px solid rgba(45, 114, 164, .3);
+      outline-offset: 4px;
+      border-radius: var(--radius);
+    }
+
+    .draw-track.is-correct {
+      border-color: rgba(230, 108, 85, .72);
+      box-shadow: 0 0 0 3px rgba(230, 108, 85, .12);
+      font-weight: 900;
+    }
+
+    .relation-lines {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .work-line {
+      display: grid;
+      grid-template-columns: 126px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      color: #2c4964;
+      font-weight: 900;
+    }
+
+    .work-line span {
+      color: #27445f;
+    }
+
+    .work-line select,
+    .work-line input {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      background: #fffaf0;
+      border: 1px solid rgba(97, 114, 133, .3);
+      border-radius: var(--radius);
+      font-weight: 900;
+    }
+
+    .work-line input {
+      text-align: center;
+    }
+
+    .work-line strong,
+    .work-line em {
+      color: var(--ink);
+      font-style: normal;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .work-line:nth-child(2) {
+      grid-template-columns: 126px minmax(62px, 88px) 28px minmax(62px, 88px) 28px minmax(62px, 88px);
+    }
+
+    .case-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .feedback.is-visible {
+      display: block;
+    }
+
+    .feedback.is-right {
+      color: #1d5e4c;
+      background: var(--mint-soft);
+      border: 1px solid rgba(79, 155, 134, .26);
+    }
+
+    .feedback.is-wrong {
+      color: #73351f;
+      background: var(--coral-soft);
+      border: 1px solid rgba(230, 108, 85, .24);
+    }
+
+    .feedback ul {
+      margin: 7px 0 0;
+      padding-left: 20px;
+    }
+
+    .mistake-panel {
+      position: sticky;
+      top: 16px;
+      padding: 16px;
+    }
+
+    .mistake-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .mistake-head h2 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0;
+    }
+
+    .mistake-count {
+      min-width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--coral);
+      border-radius: 999px;
+      font-weight: 900;
+    }
+
+    .mistake-list {
+      display: grid;
+      gap: 10px;
+      max-height: 650px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .mistake-item {
+      padding: 11px;
+      background: #fffaf0;
+      border: 1px solid rgba(216, 196, 156, .78);
+      border-radius: var(--radius);
+    }
+
+    .mistake-item p {
+      margin: 0 0 8px;
+      color: #334d65;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .mistake-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .mistake-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .mini-button {
+      min-height: 32px;
+      padding: 7px 9px;
+      color: var(--ink);
+      background: var(--blue-soft);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .empty {
+      padding: 14px;
+      color: var(--muted);
+      background: #fffaf0;
+      border: 1px dashed rgba(97, 114, 133, .32);
+      border-radius: var(--radius);
+      line-height: 1.7;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      z-index: 20;
+      transform: translateX(-50%) translateY(16px);
+      opacity: 0;
+      padding: 11px 14px;
+      color: white;
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .mistake-panel {
+        position: static;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .progress {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        min-height: 280px;
+        padding: 26px 18px 58px;
+        background:
+          linear-gradient(90deg, rgba(255, 248, 231, .96) 0%, rgba(255, 248, 231, .92) 56%, rgba(255, 248, 231, .56) 100%),
+          radial-gradient(circle at 82% 72%, rgba(79, 155, 134, .24), transparent 30%),
+          linear-gradient(135deg, #fff8e7 0%, #dcebf6 100%);
+      }
+
+      .hero::after {
+        right: 14px;
+        bottom: 10px;
+        width: 190px;
+        font-size: 34px;
+        opacity: .72;
+      }
+
+      .shell {
+        width: min(100% - 20px, 1240px);
+        margin-top: -42px;
+      }
+
+      .segmented,
+      .controls {
+        width: 100%;
+      }
+
+      .segmented button {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .case-head {
+        grid-template-columns: 1fr;
+      }
+
+      .case-storyboard {
+        grid-template-columns: 1fr;
+      }
+
+      .scene-card {
+        min-height: 0;
+      }
+
+      .scene-visual {
+        min-height: min(48vw, 230px);
+      }
+
+      .story {
+        font-size: 17px;
+      }
+
+      .step {
+        grid-template-columns: 30px minmax(0, 1fr);
+      }
+
+      .model-row,
+      .work-line,
+      .work-line:nth-child(2) {
+        grid-template-columns: 1fr;
+      }
+
+      .work-line:nth-child(2) {
+        grid-template-columns: 1fr 52px 24px 52px 24px 52px;
+      }
+
+      .work-line:nth-child(2) span {
+        grid-column: 1 / -1;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <div class="eyebrow">小小侦探破案局</div>
+      <h1>两步应用题，不靠猜答案</h1>
+      <p>每次 3 道题。先找“比”后面的标准线段，再拆“比”前面的第二条线段，最后用四条横线完成关系式和答案。</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="topbar" aria-label="练习设置">
+      <div class="controls">
+        <span class="control-label">难度</span>
+        <div class="segmented" role="group" aria-label="选择难度">
+          <button type="button" data-difficulty="20" class="is-active">20以内</button>
+          <button type="button" data-difficulty="50">50以内</button>
+          <button type="button" data-difficulty="100">100以内</button>
+        </div>
+        <button type="button" class="primary" id="newSetButton">换一组案件</button>
+        <button type="button" class="ghost" id="showAllCluesButton">全部打开高亮</button>
+      </div>
+      <div class="progress" aria-live="polite">
+        <span id="solvedCount">已破案 0/3</span>
+        <span id="mistakeTotal">错题 0</span>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="case-list" id="caseList"></div>
+      <aside class="mistake-panel" aria-label="错题库">
+        <div class="mistake-head">
+          <h2>错题库</h2>
+          <span class="mistake-count" id="mistakeBadge">0</span>
+        </div>
+        <div class="mistake-list" id="mistakeList"></div>
+        <div class="case-actions">
+          <button type="button" class="ghost" id="clearMistakesButton">清空错题</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "detective_math_mistakes_v2";
+
+    const state = {
+      difficulty: 20,
+      cases: [],
+      solved: new Set(),
+      mistakes: loadMistakes()
+    };
+
+    const RELATION_OPTIONS = [
+      "小数 + 差值 = 大数",
+      "大数 - 差值 = 小数",
+      "大数 - 小数 = 差值"
+    ];
+
+    const templates = [
+      {
+        tag: "图书角",
+        unit: "本",
+        item: "绘本",
+        standardName: "故事书",
+        compareName: "科普书",
+        relation: "more",
+        intro: "图书角整理书架时，",
+        scene: { icon: "📚", props: ["📖", "🔖", "✏️"], alt: "图书角里的绘本和书签", caption: "图书角线索", colors: ["#dcebf6", "#ffe8af"] }
+      },
+      {
+        tag: "玩具盒",
+        unit: "辆",
+        item: "小车",
+        standardName: "红色小车",
+        compareName: "蓝色小车",
+        relation: "less",
+        intro: "玩具盒清点小车时，",
+        scene: { icon: "🚗", props: ["🧸", "🧱", "🛞"], alt: "玩具盒里的小车和积木", caption: "玩具盒线索", colors: ["#ffe1d8", "#dcefe8"] }
+      },
+      {
+        tag: "贴纸任务",
+        unit: "张",
+        item: "贴纸",
+        standardName: "圆形贴纸",
+        compareName: "星星贴纸",
+        relation: "more",
+        intro: "小米整理贴纸册时，",
+        scene: { icon: "⭐", props: ["🌸", "💫", "🟡"], alt: "星星和花朵贴纸", caption: "贴纸任务线索", colors: ["#ffe8af", "#dcebf6"] }
+      },
+      {
+        tag: "水果盘",
+        unit: "个",
+        item: "草莓",
+        standardName: "小盘草莓",
+        compareName: "大盘草莓",
+        relation: "more",
+        intro: "家里准备水果时，",
+        scene: { icon: "🍓", props: ["🍽️", "🍃", "🍓"], alt: "盘子里的草莓", caption: "水果盘线索", colors: ["#ffe1d8", "#dcefe8"] }
+      },
+      {
+        tag: "排队现场",
+        unit: "人",
+        item: "同学",
+        standardName: "女生队",
+        compareName: "男生队",
+        relation: "less",
+        intro: "操场排队做游戏时，",
+        scene: { icon: "🎒", props: ["👧", "🧢", "🧃"], alt: "操场排队线和书包水杯", caption: "排队现场线索", colors: ["#dcefe8", "#ffe8af"] }
+      },
+      {
+        tag: "公交小站",
+        unit: "人",
+        item: "乘客",
+        standardName: "下车乘客",
+        compareName: "上车乘客",
+        relation: "more",
+        intro: "公交车到站时，",
+        scene: { icon: "🚌", props: ["🚏", "🎒", "👟"], alt: "公交车和小站", caption: "公交小站线索", colors: ["#dcebf6", "#ffe8af"] }
+      },
+      {
+        tag: "铅笔盒",
+        unit: "支",
+        item: "铅笔",
+        standardName: "蓝铅笔",
+        compareName: "黄铅笔",
+        relation: "less",
+        intro: "整理铅笔盒时，",
+        scene: { icon: "✏️", props: ["📏", "🧮", "📘"], alt: "铅笔盒和文具", caption: "铅笔盒线索", colors: ["#ffe8af", "#dcebf6"] }
+      },
+      {
+        tag: "动物园",
+        unit: "只",
+        item: "小鸟",
+        standardName: "树上的小鸟",
+        compareName: "草地上的小鸟",
+        relation: "more",
+        intro: "动物园观察小鸟时，",
+        scene: { icon: "🐦", props: ["🌳", "🐥", "🌿"], alt: "树枝上的小鸟", caption: "动物园线索", colors: ["#dcefe8", "#dcebf6"] }
+      }
+    ];
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(list) {
+      return [...list].sort(() => Math.random() - 0.5);
+    }
+
+    function makeComparisonNumbers(relation, max) {
+      for (let i = 0; i < 200; i += 1) {
+        const low = max <= 20 ? 4 : 10;
+        const standard = randomInt(low, Math.max(low + 2, Math.floor(max * 0.72)));
+        const diffMax = Math.max(2, Math.min(Math.floor(max * 0.28), relation === "more" ? max - standard : standard - 1));
+        const diff = randomInt(2, diffMax);
+        const compare = relation === "more" ? standard + diff : standard - diff;
+        const total = standard + compare;
+        if (compare > 0 && compare <= max && total <= max * 2) {
+          return { standard, diff, compare, total };
+        }
+      }
+      return relation === "more"
+        ? { standard: 8, diff: 3, compare: 11, total: 19 }
+        : { standard: 12, diff: 4, compare: 8, total: 20 };
+    }
+
+    function part(text, role) {
+      return { text: text, role: role || "" };
+    }
+
+    function relationText(relation) {
+      return relation === "more" ? "多" : "少";
+    }
+
+    function createCase(template, index, max) {
+      const nums = makeComparisonNumbers(template.relation, max);
+      const isMore = template.relation === "more";
+      const bigName = isMore ? template.compareName : template.standardName;
+      const smallName = isMore ? template.standardName : template.compareName;
+      const bigValue = isMore ? nums.compare : nums.standard;
+      const smallValue = isMore ? nums.standard : nums.compare;
+      const relationLabel = isMore ? "小数 + 差值 = 大数" : "大数 - 差值 = 小数";
+      const op = isMore ? "+" : "-";
+      const leftValue = isMore ? nums.standard : nums.standard;
+      const middleValue = nums.diff;
+      const resultValue = nums.compare;
+      const firstQuestion = template.compareName + "有多少" + template.unit + "？";
+      const secondQuestion = template.compareName + "和" + template.standardName + "一共有多少" + template.unit + "？";
+      const storyParts = [
+        part(template.intro),
+        part(template.compareName, "compare"),
+        part("比"),
+        part(template.standardName, "standard"),
+        part(relationText(template.relation), "relation"),
+        part(String(nums.diff), "difference"),
+        part(template.unit + "，"),
+        part(template.standardName, "standard"),
+        part("有"),
+        part(String(nums.standard), "standard"),
+        part(template.unit + "。"),
+        part(firstQuestion, "question"),
+        part(secondQuestion, "question")
+      ];
+
+      return {
+        id: Date.now() + "-" + index + "-" + Math.random().toString(16).slice(2),
+        index: index,
+        max: max,
+        tag: template.tag,
+        unit: template.unit,
+        item: template.item,
+        scene: template.scene,
+        relation: template.relation,
+        relationText: relationText(template.relation),
+        standardName: template.standardName,
+        compareName: template.compareName,
+        standardValue: nums.standard,
+        compareValue: nums.compare,
+        diffValue: nums.diff,
+        totalValue: nums.total,
+        bigName: bigName,
+        smallName: smallName,
+        bigValue: bigValue,
+        smallValue: smallValue,
+        parts: storyParts,
+        q1: firstQuestion,
+        q2: secondQuestion,
+        clues: [
+          { id: "standard", text: "标准：" + template.standardName },
+          { id: "relation", text: "关系：" + relationText(template.relation) },
+          { id: "compare", text: "比前：" + template.compareName },
+          { id: "difference", text: "差值：" + nums.diff + template.unit }
+        ],
+        solve: {
+          relationLabel: relationLabel,
+          leftValue: leftValue,
+          op: op,
+          middleValue: middleValue,
+          resultValue: resultValue,
+          firstAnswer: nums.compare,
+          secondAnswer: nums.total,
+          firstLabel: template.compareName + "有 " + nums.compare + " " + template.unit,
+          secondLabel: "一共有 " + nums.total + " " + template.unit,
+          numberFormula: leftValue + " " + op + " " + middleValue + " = " + resultValue
+        }
+      };
+    }
+
+    function createSet(max) {
+      state.solved = new Set();
+      state.cases = shuffle(templates).slice(0, 3).map((template, index) => createCase(template, index + 1, max));
+      renderCases();
+      updateStats();
+    }
+
+    function storyText(problem) {
+      return problem.parts.map(function(item) { return typeof item === "string" ? item : item.text; }).join("");
+    }
+
+    function renderStory(problem) {
+      return problem.parts.map(function(item) {
+        const text = typeof item === "string" ? item : item.text;
+        const role = typeof item === "string" ? "" : item.role;
+        if (!role) return escapeHtml(text);
+        return '<mark class="mark-' + role + '">' + escapeHtml(text) + '</mark>';
+      }).join("");
+    }
+
+    function renderScene(problem) {
+      const scene = problem.scene;
+      const colors = scene.colors || ["#dcefe8", "#ffe8af"];
+      const props = (scene.props || []).map(function(item) {
+        return '<span class="scene-prop">' + escapeHtml(item) + '</span>';
+      }).join("");
+      return '' +
+        '<figure class="scene-card" style="--scene-a:' + colors[0] + ';--scene-b:' + colors[1] + '">' +
+          '<div class="scene-visual" role="img" aria-label="' + escapeAttr(scene.alt) + '">' +
+            '<span class="scene-main">' + escapeHtml(scene.icon) + '</span>' +
+            props +
+          '</div>' +
+          '<figcaption>' + escapeHtml(scene.caption) + '</figcaption>' +
+        '</figure>';
+    }
+
+    function renderRelationOptions(selected) {
+      return '<option value="">选关系</option>' + RELATION_OPTIONS.map(function(option) {
+        return '<option value="' + option + '"' + (option === selected ? ' selected' : '') + '>' + option + '</option>';
+      }).join("");
+    }
+
+    function renderCases() {
+      const caseList = document.getElementById("caseList");
+      caseList.innerHTML = state.cases.map(function(problem) {
+        return '' +
+        '<article class="case-card" data-case-id="' + problem.id + '">' +
+          '<div class="case-head">' +
+            '<div class="case-title">' +
+              '<span class="case-index">' + problem.index + '</span>' +
+              '<h2>案件 ' + problem.index + '：' + problem.tag + '</h2>' +
+              '<span class="tag">' + problem.max + '以内</span>' +
+            '</div>' +
+            '<label class="highlight-switch"><input type="checkbox" class="highlight-toggle">高亮线索</label>' +
+          '</div>' +
+          '<div class="case-storyboard">' +
+            '<div class="story-copy">' +
+              '<div class="story" data-plain="' + escapeAttr(storyText(problem)) + '" data-highlight="' + escapeAttr(renderStory(problem)) + '">' + storyText(problem) + '</div>' +
+              '<div class="questions"><div>第一问：' + problem.q1 + '</div><div>第二问：' + problem.q2 + '</div></div>' +
+            '</div>' +
+            renderScene(problem) +
+          '</div>' +
+          '<div class="solve">' +
+            '<section class="step">' +
+              '<div class="step-num">1</div>' +
+              '<div><h3>重点选择</h3>' +
+                '<div class="clues">' +
+                  '<button type="button" class="clue-chip" data-clue-id="standard">' + problem.clues[0].text + '</button>' +
+                  '<button type="button" class="clue-chip" data-clue-id="relation">' + problem.clues[1].text + '</button>' +
+                '</div>' +
+              '</div>' +
+            '</section>' +
+            '<section class="step">' +
+              '<div class="step-num">2</div>' +
+              '<div><h3>抽拉两条线段</h3>' +
+                '<div class="clues">' +
+                  '<button type="button" class="clue-chip" data-clue-id="compare">' + problem.clues[2].text + '</button>' +
+                  '<button type="button" class="clue-chip" data-clue-id="difference">' + problem.clues[3].text + '</button>' +
+                '</div>' +
+                renderLineModel(problem) +
+              '</div>' +
+            '</section>' +
+            '<section class="step">' +
+              '<div class="step-num">3</div>' +
+              '<div><h3>四条横线答题</h3>' +
+                '<div class="relation-lines">' +
+                  '<label class="work-line"><span>第一条：关系式</span><select class="relation-select" aria-label="关系式">' + renderRelationOptions("") + '</select></label>' +
+                  '<div class="work-line"><span>第二条：数字式</span><input class="num-left" inputmode="numeric" type="number" min="0" max="' + problem.max + '"><strong>' + problem.solve.op + '</strong><input class="num-mid" inputmode="numeric" type="number" min="0" max="' + problem.max + '"><strong>=</strong><input class="num-result" inputmode="numeric" type="number" min="0" max="' + problem.max + '"></div>' +
+                  '<label class="work-line"><span>第三条：第一问</span><input class="answer-one" inputmode="numeric" type="number" min="0" max="' + problem.max + '"><em>' + problem.unit + '</em></label>' +
+                  '<label class="work-line"><span>第四条：第二问</span><input class="answer-two" inputmode="numeric" type="number" min="0" max="' + (problem.max * 2) + '"><em>' + problem.unit + '</em></label>' +
+                '</div>' +
+                '<div class="case-actions"><button type="button" class="secondary check-button">检查这道题</button><button type="button" class="ghost reveal-button">看分步答案</button></div>' +
+                '<div class="feedback" aria-live="polite"></div>' +
+              '</div>' +
+            '</section>' +
+          '</div>' +
+        '</article>';
+      }).join("");
+      syncLineModels(caseList);
+    }
+
+    function renderLineModel(problem) {
+      const startValue = 1;
+      return '' +
+        '<div class="line-model ' + problem.relation + '" data-max="' + problem.max + '" data-standard-value="' + problem.standardValue + '" data-compare-value="' + problem.compareValue + '" data-standard-name="' + escapeAttr(problem.standardName) + '" data-compare-name="' + escapeAttr(problem.compareName) + '" data-unit="' + escapeAttr(problem.unit) + '">' +
+          '<div class="model-row">' +
+            '<span class="model-label">标准线段</span>' +
+            '<div class="draw-area">' +
+              '<div class="model-bar draw-track standard-track">' +
+                '<span class="line-fill standard-fill"></span>' +
+                '<input class="line-range standard-range" type="range" min="1" max="' + problem.max + '" value="' + startValue + '" aria-label="标准线段长度">' +
+              '</div>' +
+              '<div class="slider-readout standard-readout" aria-live="polite"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="model-row">' +
+            '<span class="model-label">第二条线段</span>' +
+            '<div class="draw-area">' +
+              '<div class="model-bar draw-track compare-track">' +
+                '<span class="line-fill compare-fill"></span>' +
+                '<span class="line-gap"></span>' +
+                '<input class="line-range compare-range" type="range" min="1" max="' + problem.max + '" value="' + startValue + '" aria-label="第二条线段长度">' +
+              '</div>' +
+              '<div class="slider-readout compare-readout" aria-live="polite"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function percent(value, max, min = 3) {
+      return Math.max(min, Math.min(100, (Number(value) / Number(max)) * 100));
+    }
+
+    function syncLineModel(model) {
+      const max = Number(model.dataset.max) || 100;
+      const expectedStandard = Number(model.dataset.standardValue);
+      const expectedCompare = Number(model.dataset.compareValue);
+      const unit = model.dataset.unit || "";
+      const standardRange = model.querySelector(".standard-range");
+      const compareRange = model.querySelector(".compare-range");
+      const standard = Number(standardRange.value);
+      const compare = Number(compareRange.value);
+      const compareBase = model.classList.contains("more")
+        ? Math.min(standard, compare)
+        : compare;
+      const diff = model.classList.contains("more")
+        ? Math.max(0, compare - standard)
+        : Math.max(0, standard - compare);
+      const standardCorrect = standard === expectedStandard;
+      const compareCorrect = compare === expectedCompare;
+      const standardReadout = model.querySelector(".standard-readout");
+      const compareReadout = model.querySelector(".compare-readout");
+
+      model.style.setProperty("--standard-pct", percent(standard, max) + "%");
+      model.style.setProperty("--compare-base-pct", percent(compareBase, max) + "%");
+      model.style.setProperty("--diff-pct", percent(diff, max, 0) + "%");
+      model.querySelector(".standard-track").classList.toggle("is-correct", standardCorrect);
+      model.querySelector(".compare-track").classList.toggle("is-correct", compareCorrect);
+      standardReadout.textContent = model.dataset.standardName + "：" + standard + unit + (standardCorrect ? "（正确）" : "");
+      compareReadout.textContent = model.dataset.compareName + "：" + compare + unit + (compareCorrect ? "（正确）" : "");
+      standardReadout.classList.toggle("is-correct", standardCorrect);
+      compareReadout.classList.toggle("is-correct", compareCorrect);
+    }
+
+    function syncLineModels(root) {
+      root.querySelectorAll(".line-model").forEach(syncLineModel);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function escapeAttr(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function getProblem(card) {
+      return state.cases.find(problem => problem.id === card.dataset.caseId);
+    }
+
+    function valueOf(card, selector) {
+      const raw = card.querySelector(selector).value;
+      return raw === "" ? null : Number(raw);
+    }
+
+    function validateCase(card) {
+      const problem = getProblem(card);
+      const relationChoice = card.querySelector(".relation-select").value;
+      const numLeft = valueOf(card, ".num-left");
+      const numMid = valueOf(card, ".num-mid");
+      const numResult = valueOf(card, ".num-result");
+      const answerOne = valueOf(card, ".answer-one");
+      const answerTwo = valueOf(card, ".answer-two");
+      const standardRange = valueOf(card, ".standard-range");
+      const compareRange = valueOf(card, ".compare-range");
+      const picked = Array.from(card.querySelectorAll(".clue-chip.is-picked")).map(function(button) { return button.dataset.clueId; });
+      const problems = [];
+
+      if (!picked.includes("standard") || !picked.includes("relation")) {
+        problems.push("第 1 步：重点选择应包含“比”后面的标准，以及“" + problem.relationText + "”。");
+      }
+
+      if (!picked.includes("compare") || !picked.includes("difference")) {
+        problems.push("第 2 步：再标出“比”前面的第二条线段：" + problem.compareName + " 的绝对值，以及差值 " + problem.diffValue + problem.unit + "。");
+      }
+
+      if (standardRange !== problem.standardValue || compareRange !== problem.compareValue) {
+        problems.push("第 2 步：两条线段要自己拉到对应长度。");
+      }
+
+      if (relationChoice !== problem.solve.relationLabel) {
+        problems.push("第一条横线：关系式应选 “" + problem.solve.relationLabel + "”。");
+      }
+
+      if (numLeft !== problem.solve.leftValue || numMid !== problem.solve.middleValue || numResult !== problem.solve.resultValue) {
+        problems.push("第二条横线：数字式应填 " + problem.solve.numberFormula + "。");
+      }
+
+      if (answerOne !== problem.solve.firstAnswer) {
+        problems.push("第三条横线：第一问答案是 " + problem.solve.firstAnswer + problem.unit + "。");
+      }
+
+      if (answerTwo !== problem.solve.secondAnswer) {
+        problems.push("第四条横线：第二问答案是 " + problem.solve.secondAnswer + problem.unit + "。");
+      }
+
+      return {
+        ok: problems.length === 0,
+        problems: problems,
+        child: {
+          relationChoice: relationChoice,
+          standardRange: standardRange,
+          compareRange: compareRange,
+          numLeft: numLeft,
+          numMid: numMid,
+          numResult: numResult,
+          answerOne: answerOne,
+          answerTwo: answerTwo
+        }
+      };
+    }
+
+    function showFeedback(card, validation, revealOnly = false) {
+      const problem = getProblem(card);
+      const feedback = card.querySelector(".feedback");
+      feedback.classList.add("is-visible");
+      feedback.classList.toggle("is-right", validation.ok && !revealOnly);
+      feedback.classList.toggle("is-wrong", !validation.ok || revealOnly);
+
+      if (validation.ok && !revealOnly) {
+        feedback.innerHTML = '<strong>破案成功。</strong><br>你已经按“标准线段 → 第二条线段 → 四条横线”的顺序完成。';
+        return;
+      }
+
+      const tips = validation.problems.length ? validation.problems : [
+        "第 1 步：标准是 " + problem.standardName + "，重点关系是“" + problem.relationText + "”。",
+        "第 2 步：标准线段拉到 " + problem.standardValue + problem.unit + "，第二条线段拉到 " + problem.compareValue + problem.unit + "。",
+        "第 2 步：差值是 " + problem.diffValue + problem.unit + "。",
+        "第一条横线：" + problem.solve.relationLabel + "。",
+        "第二条横线：" + problem.solve.numberFormula + "。",
+        "第三条横线：" + problem.solve.firstAnswer + problem.unit + "。",
+        "第四条横线：" + problem.solve.secondAnswer + problem.unit + "。"
+      ];
+
+      feedback.innerHTML = '<strong>' + (revealOnly ? "分步答案" : "还差一点") + '</strong><ul>' + tips.map(function(tip) { return '<li>' + tip + '</li>'; }).join("") + '</ul>';
+    }
+
+    function addMistake(problem, validation) {
+      const record = {
+        id: Date.now() + "-" + Math.random().toString(16).slice(2),
+        createdAt: new Date().toLocaleString("zh-CN", { hour12: false }),
+        difficulty: problem.max,
+        tag: problem.tag,
+        story: storyText(problem),
+        q1: problem.q1,
+        q2: problem.q2,
+        relationship: problem.solve.relationLabel,
+        numberFormula: problem.solve.numberFormula,
+        firstLabel: problem.solve.firstLabel,
+        secondLabel: problem.solve.secondLabel,
+        problem: problem
+      };
+      state.mistakes = [record].concat(state.mistakes).slice(0, 30);
+      saveMistakes();
+      renderMistakes();
+    }
+
+    function loadMistakes() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveMistakes() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.mistakes));
+    }
+
+    function renderMistakes() {
+      const list = document.getElementById("mistakeList");
+      document.getElementById("mistakeBadge").textContent = state.mistakes.length;
+      document.getElementById("mistakeTotal").textContent = `错题 ${state.mistakes.length}`;
+
+      if (!state.mistakes.length) {
+        list.innerHTML = `<div class="empty">还没有错题。做错的题会自动进来，方便下次集中复盘。</div>`;
+        return;
+      }
+
+      list.innerHTML = state.mistakes.map(item => `
+        <div class="mistake-item">
+          <p>${item.story}</p>
+          <div class="mistake-meta">
+            <span>${item.difficulty}以内</span>
+            <span>${item.tag}</span>
+            <span>${item.createdAt}</span>
+          </div>
+          <div class="mistake-actions">
+            <button type="button" class="mini-button retry-button" data-id="${item.id}">再做同题</button>
+            <button type="button" class="mini-button answer-button" data-id="${item.id}">看答案</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function updateStats() {
+      document.getElementById("solvedCount").textContent = `已破案 ${state.solved.size}/3`;
+      document.getElementById("mistakeTotal").textContent = `错题 ${state.mistakes.length}`;
+    }
+
+    function toast(message) {
+      const node = document.getElementById("toast");
+      node.textContent = message;
+      node.classList.add("is-visible");
+      window.clearTimeout(toast.timer);
+      toast.timer = window.setTimeout(() => node.classList.remove("is-visible"), 1800);
+    }
+
+    function prefillAnswers(card) {
+      const problem = getProblem(card);
+      card.querySelectorAll(".clue-chip").forEach(function(button) { button.classList.add("is-picked"); });
+      card.querySelector(".standard-range").value = problem.standardValue;
+      card.querySelector(".compare-range").value = problem.compareValue;
+      card.querySelector(".relation-select").value = problem.solve.relationLabel;
+      card.querySelector(".num-left").value = problem.solve.leftValue;
+      card.querySelector(".num-mid").value = problem.solve.middleValue;
+      card.querySelector(".num-result").value = problem.solve.resultValue;
+      card.querySelector(".answer-one").value = problem.solve.firstAnswer;
+      card.querySelector(".answer-two").value = problem.solve.secondAnswer;
+      syncLineModels(card);
+    }
+
+    function bindEvents() {
+      document.querySelector(".segmented").addEventListener("click", event => {
+        const button = event.target.closest("button[data-difficulty]");
+        if (!button) return;
+        document.querySelectorAll(".segmented button").forEach(item => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state.difficulty = Number(button.dataset.difficulty);
+        createSet(state.difficulty);
+        toast(`已切换到 ${state.difficulty} 以内`);
+      });
+
+      document.getElementById("newSetButton").addEventListener("click", () => {
+        createSet(state.difficulty);
+        toast("新案件已生成");
+      });
+
+      document.getElementById("showAllCluesButton").addEventListener("click", () => {
+        document.querySelectorAll(".highlight-toggle").forEach(input => {
+          input.checked = true;
+          const story = input.closest(".case-card").querySelector(".story");
+          story.innerHTML = story.dataset.highlight;
+        });
+        toast("已打开全部高亮");
+      });
+
+      document.getElementById("caseList").addEventListener("click", event => {
+        const card = event.target.closest(".case-card");
+        if (!card) return;
+
+        const clue = event.target.closest(".clue-chip");
+        if (clue) {
+          clue.classList.toggle("is-picked");
+          return;
+        }
+
+        if (event.target.closest(".check-button")) {
+          const validation = validateCase(card);
+          showFeedback(card, validation);
+          const problem = getProblem(card);
+          if (validation.ok) {
+            state.solved.add(problem.id);
+            updateStats();
+            toast("这道题破案成功");
+          } else {
+            addMistake(problem, validation);
+            toast("已加入错题库");
+          }
+          return;
+        }
+
+        if (event.target.closest(".reveal-button")) {
+          const validation = validateCase(card);
+          prefillAnswers(card);
+          showFeedback(card, validation, true);
+        }
+      });
+
+      document.getElementById("caseList").addEventListener("input", event => {
+        if (!event.target.classList.contains("line-range")) return;
+        syncLineModel(event.target.closest(".line-model"));
+      });
+
+      document.getElementById("caseList").addEventListener("change", event => {
+        if (!event.target.classList.contains("highlight-toggle")) return;
+        const story = event.target.closest(".case-card").querySelector(".story");
+        story.innerHTML = event.target.checked ? story.dataset.highlight : story.dataset.plain;
+      });
+
+      document.getElementById("mistakeList").addEventListener("click", event => {
+        const retry = event.target.closest(".retry-button");
+        const answer = event.target.closest(".answer-button");
+        const button = retry || answer;
+        if (!button) return;
+
+        const record = state.mistakes.find(item => item.id === button.dataset.id);
+        if (!record) return;
+
+        if (retry) {
+          const recovered = { ...record.problem, id: `${Date.now()}-retry`, index: 1 };
+          const extras = shuffle(templates)
+            .slice(0, 2)
+            .map((template, index) => createCase(template, index + 2, record.difficulty));
+          state.difficulty = record.difficulty;
+          state.cases = [recovered, ...extras];
+          state.solved = new Set();
+          document.querySelectorAll(".segmented button").forEach(item => {
+            item.classList.toggle("is-active", Number(item.dataset.difficulty) === record.difficulty);
+          });
+          renderCases();
+          updateStats();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          toast("错题已放到第 1 题");
+        }
+
+        if (answer) {
+          toast(record.relationship + "；" + record.numberFormula);
+        }
+      });
+
+      document.getElementById("clearMistakesButton").addEventListener("click", () => {
+        state.mistakes = [];
+        saveMistakes();
+        renderMistakes();
+        toast("错题库已清空");
+      });
+    }
+
+    bindEvents();
+    createSet(state.difficulty);
+    renderMistakes();
+  </script>
+</body>
+</html>
